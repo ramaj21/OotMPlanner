@@ -1,0 +1,2 @@
+rootProject.name='OotM Planner'
+include ':app'
