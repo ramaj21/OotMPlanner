@@ -76,4 +76,5 @@ public class TodoActivity extends AppCompatActivity {
         todoItemAdapter.notifyDataSetChanged();
         itemsBeingDisplayed.setVisibility(View.GONE);
     }
+
 }

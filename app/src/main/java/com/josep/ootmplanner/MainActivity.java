@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openNotes(View v){
-
+        Intent intent = new Intent(this, NotesActivity.class);
+        startActivity(intent);
     }
 
     public void openCalendar(View v){
