@@ -1,12 +1,17 @@
 package com.josep.ootmplanner;
 
+import android.widget.Button;
+import android.widget.CheckBox;
+
 public class TodoItem {
     private String todoTitle;
     private String todoDescription;
+    private boolean checkBox;
 
     public TodoItem(String title, String description){
         todoTitle = title;
         todoDescription = description;
+        checkBox = false;
     }
 
     public void setTodoTitle(String title){
@@ -16,10 +21,18 @@ public class TodoItem {
         todoDescription = description;
     }
 
+    public void setCheckBox(Boolean set){
+        checkBox = set;
+    }
+
     public String getTodoTitle(){
         return todoTitle;
     }
     public String getTodoDescription(){
         return todoDescription;
+    }
+
+    public Boolean getCheckBox(){
+        return checkBox;
     }
 }

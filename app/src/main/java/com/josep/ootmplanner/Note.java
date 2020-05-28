@@ -1,6 +1,8 @@
 package com.josep.ootmplanner;
 
-public class Note {
+import java.io.Serializable;
+
+public class Note implements Serializable {
     private String note;
 
     public Note(String note){
