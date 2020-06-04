@@ -14,6 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class NotesActivity extends AppCompatActivity {
@@ -22,19 +27,35 @@ public class NotesActivity extends AppCompatActivity {
     private ArrayList<Note> notes;
     private TextView noNotes;
     public static Context context;
+    private String FILENAME = "notes_file";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
 
+        notes = new ArrayList<>();
+
+        try{
+            FileInputStream fin = openFileInput(FILENAME);
+            ObjectInputStream ois = new ObjectInputStream(fin);
+            notes = (ArrayList<Note>)ois.readObject();
+            ois.close();
+            fin.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
         mRecyclerView = findViewById(R.id.notesRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        notes = new ArrayList<>();
         noteAdapter = new NoteAdapter(notes);
         mRecyclerView.setAdapter(noteAdapter);
         noNotes = findViewById(R.id.noNotes);
+        if(notes.size()>0)
+            noNotes.setVisibility(View.GONE);
         context = this;
+
     }
 
     public void newNoteButtonClicked(View view){
@@ -71,5 +92,35 @@ public class NotesActivity extends AppCompatActivity {
         notes.add(new Note(note));
         noteAdapter.notifyDataSetChanged();
         noNotes.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        try {
+            FileOutputStream fout = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(notes);
+            oos.close();
+            fout.close();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        try {
+            FileOutputStream fout = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(notes);
+            oos.close();
+            fout.close();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }

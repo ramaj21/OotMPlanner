@@ -19,14 +19,22 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class TodoActivity extends AppCompatActivity implements IncompleteTodoFragment.OnItemsCompletedListener{
 
+    Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
+
 
         ViewPager viewPager = findViewById(R.id.viewpager);
         TodoFragmentAdapter todoFragmentAdapter = new TodoFragmentAdapter(getSupportFragmentManager());
@@ -40,5 +48,10 @@ public class TodoActivity extends AppCompatActivity implements IncompleteTodoFra
         String tag = "android:switcher:" + R.id.viewpager + ":" + 1;
         CompleteTodoFragment completeTodoFragment = (CompleteTodoFragment) getSupportFragmentManager().findFragmentByTag(tag);
         completeTodoFragment.addItemsToList(completed);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
     }
 }

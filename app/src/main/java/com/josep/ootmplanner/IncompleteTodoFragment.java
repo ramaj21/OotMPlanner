@@ -17,21 +17,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
 public class IncompleteTodoFragment extends Fragment {
     private RecyclerView mRecyclerView;
-    private TodoItemAdapter todoItemAdapter;
-    static ArrayList<TodoItem> todoItems;
+    static TodoItemAdapter todoItemAdapter;
+    static ArrayList<TodoItem> todoItems = new ArrayList<>();
     private TextView itemsBeingDisplayed;
     private Button addItem;
     private ArrayList<TodoItem> moveNotes;
     public static Button moveItem;
+    private String FileName = "incomplete_todo_file";
 
-    public static IncompleteTodoFragment getInstance() {
-        return new IncompleteTodoFragment();
-    }
 
 
     @Override
@@ -39,8 +42,23 @@ public class IncompleteTodoFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_incomplete_todo, container, false);
 
+        todoItems = new ArrayList<>();
+
+        try{
+            FileInputStream fin = getContext().openFileInput(FileName);
+            ObjectInputStream ois = new ObjectInputStream(fin);
+            todoItems = (ArrayList<TodoItem>)ois.readObject();
+            ois.close();
+            fin.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
 
         itemsBeingDisplayed = rootView.findViewById(R.id.noItems);
+        if(todoItems.size()>0)
+            itemsBeingDisplayed.setVisibility(View.GONE);
         addItem = rootView.findViewById(R.id.newNote);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +78,6 @@ public class IncompleteTodoFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
-        todoItems = new ArrayList<>();
         todoItemAdapter = new TodoItemAdapter(todoItems);
         mRecyclerView.setAdapter(todoItemAdapter);
         return rootView;
@@ -128,5 +145,35 @@ public class IncompleteTodoFragment extends Fragment {
     public void onAttach(Context context){
         super.onAttach(context);
         onItemsCompletedListener = (OnItemsCompletedListener) getActivity();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        try {
+            FileOutputStream fout = getContext().openFileOutput(FileName, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(todoItems);
+            oos.close();
+            fout.close();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        try {
+            FileOutputStream fout = getContext().openFileOutput(FileName, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(todoItems);
+            oos.close();
+            fout.close();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }

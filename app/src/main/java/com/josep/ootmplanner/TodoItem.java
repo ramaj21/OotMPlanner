@@ -3,7 +3,9 @@ package com.josep.ootmplanner;
 import android.widget.Button;
 import android.widget.CheckBox;
 
-public class TodoItem {
+import java.io.Serializable;
+
+public class TodoItem implements Serializable {
     private String todoTitle;
     private String todoDescription;
     private boolean checkBox;
